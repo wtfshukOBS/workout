@@ -1,8 +1,8 @@
-const CACHE = 'workout-v1';
-const ASSETS = ["/", "/index.html", "/ai.html"];
+const CACHE = 'workout-v3';
+const ASSETS = ['/workout/', '/workout/index.html'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})));
   self.skipWaiting();
 });
 
@@ -15,6 +15,6 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('/index.html')))
+    fetch(e.request).catch(() => caches.match(e.request))
   );
 });
