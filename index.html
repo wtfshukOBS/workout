@@ -167,36 +167,54 @@ body{background:#0a0a0a;color:#f0f0f0;font-family:system-ui,sans-serif;position:
 .prb{font-size:13px;line-height:1.7;white-space:pre-wrap}
 .prsave{margin-top:12px;width:100%;padding:11px;background:#202020;color:#1DB954;font-size:14px;font-weight:700;border:1px solid #14532d;border-radius:11px;cursor:pointer}
 
-/* NUTRITION */
-.nsum{margin:0 16px 12px;background:#161616;border:1px solid #2c2c2c;border-radius:16px;padding:15px}
-.ncrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
-.ncnum{font-size:28px;font-weight:800}
-.mrings{display:flex;gap:10px;justify-content:center;margin-bottom:13px}
-.mring{display:flex;flex-direction:column;align-items:center;gap:4px}
-.mring svg{transform:rotate(-90deg)}
-.mrlv{font-size:12px;font-weight:700;text-align:center}
-.mrll{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.04em}
-.mbars{display:flex;flex-direction:column;gap:7px}
-.mbar{display:flex;align-items:center;gap:9px}
-.mbarl{font-size:11px;color:#555;width:52px;flex-shrink:0}
-.mbart{flex:1;height:7px;background:#202020;border-radius:4px;overflow:hidden}
-.mbarf{height:100%;border-radius:4px;transition:width .5s}
-.mbarv{font-size:11px;font-weight:600;width:54px;text-align:right;flex-shrink:0}
-.nacts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 16px 12px}
-.nab{padding:13px;border-radius:13px;border:1px solid #2c2c2c;background:#161616;cursor:pointer;text-align:center}
-.nab:active{transform:scale(.97)}
-.nabi{font-size:22px;margin-bottom:5px}
-.nabn{font-size:13px;font-weight:700}
-.nabs{font-size:10px;color:#555;margin-top:1px}
-.flog{padding:0 16px 20px}
-.flt{font-size:14px;font-weight:700;margin-bottom:11px;display:flex;justify-content:space-between}
-.flt button{font-size:12px;color:#e74c3c;background:none;border:none;cursor:pointer}
-.fent{background:#161616;border:1px solid #2c2c2c;border-radius:11px;padding:12px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px}
-.fei{flex:1}
-.fen{font-size:14px;font-weight:500}
-.fem{font-size:11px;color:#555;margin-top:2px}
-.fec{font-size:16px;font-weight:700;color:#1DB954}
-.fdel{background:none;border:none;color:#555;font-size:18px;cursor:pointer;padding:4px}
+/* NUTRITION — SnapCalorie style */
+/* header */
+.nut-hdr{padding:calc(env(safe-area-inset-top,0px)+14px) 16px 0;position:sticky;top:0;background:#0d1117;z-index:5}
+.nut-hdr h1{font-size:22px;font-weight:800;color:#e96c2e;letter-spacing:-.01em}
+/* week strip */
+.nut-week{display:flex;padding:10px 16px 12px;gap:0;overflow-x:auto}
+.nut-week::-webkit-scrollbar{display:none}
+.nwd{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:40px}
+.nwd-l{font-size:10px;color:#556;text-transform:capitalize}
+.nwd-n{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#7a8a99}
+.nwd.today .nwd-n{border:2px solid #f0f0f0;color:#f0f0f0;border-radius:8px}
+/* gauge card */
+.gauge-card{margin:0 14px 10px;background:#161d27;border-radius:18px;padding:24px 20px 18px;position:relative;overflow:hidden}
+.gauge-wrap{position:relative;width:200px;height:110px;margin:0 auto 6px}
+.gauge-wrap svg{position:absolute;top:0;left:0}
+.gauge-center{position:absolute;bottom:0;left:0;right:0;text-align:center}
+.gauge-num{font-size:42px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.gauge-lbl{font-size:14px;color:#7a8a99;margin-top:2px;margin-bottom:10px}
+.macro-row-sc{display:flex;justify-content:space-around;margin-top:4px}
+.macro-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.macro-col-val{font-size:15px;font-weight:700}
+.macro-col-bar{width:100%;height:3px;background:#1e2a38;border-radius:2px;overflow:hidden;margin:0 4px}
+.macro-col-fill{height:100%;border-radius:2px;transition:width .5s}
+.macro-col-lbl{font-size:11px;color:#7a8a99}
+/* add buttons row */
+.nut-add-row{display:flex;gap:8px;padding:0 14px 12px}
+.nut-add-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px;background:#161d27;border-radius:14px;border:none;cursor:pointer;touch-action:manipulation;color:#f0f0f0}
+.nut-add-btn:active{transform:scale(.96)}
+.nut-add-icon{font-size:22px}
+.nut-add-lbl{font-size:11px;font-weight:600;color:#f0f0f0}
+.nut-add-sub{font-size:10px;color:#556}
+/* meal sections */
+.meals-title{font-size:13px;color:#7a8a99;font-weight:600;padding:4px 16px 8px;text-transform:uppercase;letter-spacing:.06em}
+.meal-section{margin:0 14px 8px;background:#161d27;border-radius:14px;overflow:hidden}
+.meal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px;cursor:pointer;touch-action:manipulation}
+.meal-name{font-size:16px;font-weight:700}
+.meal-cal-badge{font-size:12px;color:#7a8a99;margin-right:8px}
+.meal-plus{width:30px;height:30px;border-radius:50%;background:#2979f0;border:none;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-shrink:0;line-height:1}
+.meal-items{border-top:1px solid #1e2a38;padding:8px 14px}
+.meal-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2330}
+.meal-item:last-child{border-bottom:none}
+.meal-item-name{font-size:14px;font-weight:500}
+.meal-item-cal{font-size:13px;color:#2979f0;font-weight:600}
+.meal-item-del{background:none;border:none;color:#445;font-size:16px;cursor:pointer;padding:4px;margin-left:6px}
+/* remaining */
+.nut-remaining-bar{margin:0 14px 14px;background:#161d27;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.nrb-lbl{font-size:12px;color:#7a8a99}
+.nrb-val{font-size:14px;font-weight:700;color:#2979f0}
 
 /* PHOTO MODAL */
 .pmov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:960;flex-direction:column}
@@ -380,24 +398,113 @@ canvas.cc{width:100%;height:130px;display:block}
 </div>
 
 <!-- NUTRITION -->
-<div id="s-nut" class="scr">
-  <div class="shdr"><h1>🥗 Nutrition</h1><p>AI-powered food tracking</p></div>
-  <div class="nsum">
-    <div class="ncrow"><div><div class="ncnum" id="n-cals">0</div><div style="font-size:12px;color:#555">kcal today</div></div><div style="text-align:right"><div style="font-size:12px;color:#555" id="n-goal">Goal: 2,400 kcal</div><div style="font-size:12px;color:#555" id="n-rem">2,400 remaining</div></div></div>
-    <div class="mrings" id="n-rings"></div>
-    <div class="mbars" id="n-bars"></div>
+<div id="s-nut" class="scr" style="background:#0d1117">
+  <div class="nut-hdr">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px">
+      <h1>Nutrition</h1>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="background:#161d27;border-radius:20px;padding:5px 12px;font-size:13px;display:flex;align-items:center;gap:5px"><span>🔥</span><span id="n-streak-lbl">0</span></div>
+        <button id="n-goal-btn" style="background:#161d27;border:none;border-radius:20px;padding:5px 12px;font-size:13px;color:#f0f0f0;cursor:pointer">🎯 Goals</button>
+      </div>
+    </div>
+    <!-- week strip -->
+    <div class="nut-week" id="nut-week"></div>
   </div>
-  <div class="nacts">
-    <div class="nab" id="n-snap"><div class="nabi">📸</div><div class="nabn">Snap Food</div><div class="nabs">AI estimates calories</div></div>
-    <div class="nab" id="n-srch"><div class="nabi">🔍</div><div class="nabn">Search Food</div><div class="nabs">Describe what you ate</div></div>
-    <div class="nab" id="n-bar"><div class="nabi">📷</div><div class="nabn">Barcode</div><div class="nabs">Look up product</div></div>
-    <div class="nab" id="n-goal-btn"><div class="nabi">🎯</div><div class="nabn">Set Goals</div><div class="nabs">Calories & macros</div></div>
+
+  <!-- gauge card -->
+  <div class="gauge-card">
+    <div class="gauge-wrap">
+      <svg width="200" height="110" viewBox="0 0 200 110">
+        <!-- track -->
+        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e2a38" stroke-width="14" stroke-linecap="round"/>
+        <!-- fill -->
+        <path id="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e96c2e" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" style="transition:stroke-dashoffset .6s ease"/>
+      </svg>
+      <div class="gauge-center">
+        <div class="gauge-num" id="n-cals">0</div>
+        <div class="gauge-lbl">calories</div>
+      </div>
+    </div>
+    <!-- macro bars row -->
+    <div class="macro-row-sc" id="n-macros">
+      <div class="macro-col">
+        <div class="macro-col-val" id="nm-prot">0g</div>
+        <div style="width:80%;height:3px;background:#1e2a38;border-radius:2px;overflow:hidden;margin:3px auto"><div id="nmb-prot" class="macro-col-fill" style="width:0%;background:#a3e635"></div></div>
+        <div class="macro-col-lbl">Protein</div>
+      </div>
+      <div class="macro-col">
+        <div class="macro-col-val" id="nm-carb">0g</div>
+        <div style="width:80%;height:3px;background:#1e2a38;border-radius:2px;overflow:hidden;margin:3px auto"><div id="nmb-carb" class="macro-col-fill" style="width:0%;background:#22d3ee"></div></div>
+        <div class="macro-col-lbl">Carbs</div>
+      </div>
+      <div class="macro-col">
+        <div class="macro-col-val" id="nm-fat">0g</div>
+        <div style="width:80%;height:3px;background:#1e2a38;border-radius:2px;overflow:hidden;margin:3px auto"><div id="nmb-fat" class="macro-col-fill" style="width:0%;background:#c084fc"></div></div>
+        <div class="macro-col-lbl">Fats</div>
+      </div>
+    </div>
   </div>
-  <div class="flog">
-    <div class="flt"><span>Today's log</span><button id="n-clear">Clear all</button></div>
-    <div id="n-flist"></div>
-    <div id="n-empty" class="empty">No food logged yet — snap a photo or search!</div>
+
+  <!-- remaining bar -->
+  <div class="nut-remaining-bar">
+    <span class="nrb-lbl">Remaining today</span>
+    <span class="nrb-val" id="n-rem">2,400 kcal</span>
   </div>
+
+  <!-- add food buttons -->
+  <div class="nut-add-row">
+    <button class="nut-add-btn" id="n-snap"><div class="nut-add-icon">📸</div><div class="nut-add-lbl">Snap</div><div class="nut-add-sub">AI estimate</div></button>
+    <button class="nut-add-btn" id="n-srch"><div class="nut-add-icon">🔍</div><div class="nut-add-lbl">Search</div><div class="nut-add-sub">Describe it</div></button>
+    <button class="nut-add-btn" id="n-bar"><div class="nut-add-icon">📷</div><div class="nut-add-lbl">Barcode</div><div class="nut-add-sub">Look up</div></button>
+  </div>
+
+  <!-- meal sections -->
+  <div class="meals-title">Today's Meals</div>
+  <div id="meal-breakfast" class="meal-section">
+    <div class="meal-header" onclick="toggleMeal('breakfast')">
+      <span class="meal-name">Breakfast</span>
+      <div style="display:flex;align-items:center">
+        <span class="meal-cal-badge" id="mc-breakfast">0 kcal</span>
+        <button class="meal-plus" onclick="event.stopPropagation();addToMeal('breakfast')">+</button>
+      </div>
+    </div>
+    <div class="meal-items" id="mi-breakfast" style="display:none"></div>
+  </div>
+  <div id="meal-lunch" class="meal-section">
+    <div class="meal-header" onclick="toggleMeal('lunch')">
+      <span class="meal-name">Lunch</span>
+      <div style="display:flex;align-items:center">
+        <span class="meal-cal-badge" id="mc-lunch">0 kcal</span>
+        <button class="meal-plus" onclick="event.stopPropagation();addToMeal('lunch')">+</button>
+      </div>
+    </div>
+    <div class="meal-items" id="mi-lunch" style="display:none"></div>
+  </div>
+  <div id="meal-snack" class="meal-section">
+    <div class="meal-header" onclick="toggleMeal('snack')">
+      <span class="meal-name">Snack</span>
+      <div style="display:flex;align-items:center">
+        <span class="meal-cal-badge" id="mc-snack">0 kcal</span>
+        <button class="meal-plus" onclick="event.stopPropagation();addToMeal('snack')">+</button>
+      </div>
+    </div>
+    <div class="meal-items" id="mi-snack" style="display:none"></div>
+  </div>
+  <div id="meal-dinner" class="meal-section">
+    <div class="meal-header" onclick="toggleMeal('dinner')">
+      <span class="meal-name">Dinner</span>
+      <div style="display:flex;align-items:center">
+        <span class="meal-cal-badge" id="mc-dinner">0 kcal</span>
+        <button class="meal-plus" onclick="event.stopPropagation();addToMeal('dinner')">+</button>
+      </div>
+    </div>
+    <div class="meal-items" id="mi-dinner" style="display:none"></div>
+  </div>
+
+  <div style="display:flex;justify-content:center;padding:12px">
+    <button onclick="if(confirm('Clear all food?')){FL=[];sv('wk5_food_'+dk(),FL);renderNut();}" style="background:none;border:none;color:#445;font-size:12px;cursor:pointer">Clear all food</button>
+  </div>
+  <div style="height:16px"></div>
 </div>
 
 <!-- PROGRESS -->
@@ -826,35 +933,85 @@ document.getElementById('p-save').addEventListener('click',function(){
 });
 
 // NUTRITION
+var currentMeal = 'breakfast';
+var mealExpanded = {};
+
 function renderNut(){
+  // totals
   var tot=FL.reduce(function(a,f){return{cal:a.cal+(f.cal||0),prot:a.prot+(f.prot||0),carb:a.carb+(f.carb||0),fat:a.fat+(f.fat||0)};},{cal:0,prot:0,carb:0,fat:0});
+
+  // gauge
   document.getElementById('n-cals').textContent=Math.round(tot.cal);
-  document.getElementById('n-goal').textContent='Goal: '+NG.cal.toLocaleString()+' kcal';
-  document.getElementById('n-rem').textContent=Math.max(0,NG.cal-Math.round(tot.cal)).toLocaleString()+' remaining';
-  var rings=document.getElementById('n-rings'); rings.innerHTML='';
-  [{l:'Protein',c:tot.prot,g:NG.prot,col:'#3b82f6'},{l:'Carbs',c:tot.carb,g:NG.carb,col:'#f97316'},{l:'Fat',c:tot.fat,g:NG.fat,col:'#a855f7'}].forEach(function(m){
-    var p=Math.min(1,m.g?m.c/m.g:0), circ=2*Math.PI*26, off=circ*(1-p);
-    rings.innerHTML+='<div class="mring"><svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#2c2c2c" stroke-width="5"/><circle cx="30" cy="30" r="26" fill="none" stroke="'+m.col+'" stroke-width="5" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" stroke-linecap="round"/></svg><div class="mrlv">'+Math.round(m.c)+'g</div><div class="mrll">'+m.l+'</div></div>';
-  });
-  var bars=document.getElementById('n-bars'); bars.innerHTML='';
-  [{l:'Cals',c:tot.cal,g:NG.cal,col:'#1DB954',u:'kcal'},{l:'Protein',c:tot.prot,g:NG.prot,col:'#3b82f6',u:'g'},{l:'Carbs',c:tot.carb,g:NG.carb,col:'#f97316',u:'g'},{l:'Fat',c:tot.fat,g:NG.fat,col:'#a855f7',u:'g'}].forEach(function(m){
-    var p=m.g?Math.min(100,Math.round(m.c/m.g*100)):0;
-    bars.innerHTML+='<div class="mbar"><div class="mbarl">'+m.l+'</div><div class="mbart"><div class="mbarf" style="width:'+p+'%;background:'+m.col+'"></div></div><div class="mbarv" style="color:'+m.col+'">'+Math.round(m.c)+'<span style="font-size:9px;color:#555;font-weight:400"> '+m.u+'</span></div></div>';
-  });
-  var list=document.getElementById('n-flist'), empty=document.getElementById('n-empty');
-  list.innerHTML=''; empty.style.display=FL.length?'none':'block';
-  FL.forEach(function(f,i){
-    var div=document.createElement('div'); div.className='fent';
-    div.innerHTML='<div class="fei"><div class="fen">'+f.name+'</div><div class="fem">P:'+(f.prot||0)+'g · C:'+(f.carb||0)+'g · F:'+(f.fat||0)+'g</div></div><div class="fec">'+f.cal+' kcal</div><button class="fdel">×</button>';
-    div.querySelector('.fdel').addEventListener('click',function(){FL.splice(i,1);sv('wk5_food_'+dk(),FL);renderNut();});
-    list.appendChild(div);
+  var pct=NG.cal>0?Math.min(1,tot.cal/NG.cal):0;
+  var arcLen=251.2;
+  document.getElementById('gauge-fill').style.strokeDashoffset=arcLen*(1-pct);
+
+  // macro bars
+  document.getElementById('nm-prot').textContent=Math.round(tot.prot)+'g';
+  document.getElementById('nm-carb').textContent=Math.round(tot.carb)+'g';
+  document.getElementById('nm-fat').textContent=Math.round(tot.fat)+'g';
+  document.getElementById('nmb-prot').style.width=Math.min(100,NG.prot?Math.round(tot.prot/NG.prot*100):0)+'%';
+  document.getElementById('nmb-carb').style.width=Math.min(100,NG.carb?Math.round(tot.carb/NG.carb*100):0)+'%';
+  document.getElementById('nmb-fat').style.width=Math.min(100,NG.fat?Math.round(tot.fat/NG.fat*100):0)+'%';
+
+  // remaining
+  var rem=Math.max(0,NG.cal-Math.round(tot.cal));
+  document.getElementById('n-rem').textContent=rem.toLocaleString()+' kcal';
+
+  // streak label
+  document.getElementById('n-streak-lbl').textContent=streak();
+
+  // week strip
+  var ww=document.getElementById('nut-week'); ww.innerHTML='';
+  var days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  var now=new Date();
+  for(var i=0;i<7;i++){
+    var d=new Date(now); d.setDate(now.getDate()-now.getDay()+i);
+    var isT=d.toDateString()===now.toDateString();
+    var div=document.createElement('div'); div.className='nwd'+(isT?' today':'');
+    div.innerHTML='<div class="nwd-l">'+days[d.getDay()]+'</div><div class="nwd-n">'+d.getDate()+'</div>';
+    ww.appendChild(div);
+  }
+
+  // meal sections
+  var meals=['breakfast','lunch','snack','dinner'];
+  meals.forEach(function(m){
+    var items=FL.filter(function(f){return f.meal===m;});
+    var mCal=items.reduce(function(s,f){return s+(f.cal||0);},0);
+    document.getElementById('mc-'+m).textContent=mCal?mCal+' kcal':'';
+    var container=document.getElementById('mi-'+m);
+    container.innerHTML='';
+    if(items.length){
+      items.forEach(function(f,idx){
+        var globalIdx=FL.indexOf(f);
+        var row=document.createElement('div'); row.className='meal-item';
+        row.innerHTML='<div><div class="meal-item-name">'+f.name+'</div><div style="font-size:11px;color:#445;margin-top:2px">P:'+(f.prot||0)+'g · C:'+(f.carb||0)+'g · F:'+(f.fat||0)+'g</div></div><div style="display:flex;align-items:center"><span class="meal-item-cal">'+f.cal+' kcal</span><button class="meal-item-del" data-i="'+globalIdx+'">×</button></div>';
+        row.querySelector('.meal-item-del').addEventListener('click',function(){FL.splice(parseInt(this.dataset.i),1);sv('wk5_food_'+dk(),FL);renderNut();});
+        container.appendChild(row);
+      });
+      // auto-expand if has items
+      if(!mealExpanded[m]){mealExpanded[m]=true; container.style.display='block';}
+    }
   });
 }
-document.getElementById('n-clear').addEventListener('click',function(){if(confirm('Clear today\'s food?')){FL=[];sv('wk5_food_'+dk(),FL);renderNut();}});
+
+function toggleMeal(m){
+  var el=document.getElementById('mi-'+m);
+  mealExpanded[m]=!mealExpanded[m];
+  el.style.display=mealExpanded[m]?'block':'none';
+}
+
+function addToMeal(meal){
+  currentMeal=meal;
+  document.getElementById('fs-res').classList.remove('on');
+  document.getElementById('fs-add').disabled=true;
+  document.getElementById('fs-ov').classList.add('on');
+}
 
 // Photo
 var capImg=null, capMt='image/jpeg';
 document.getElementById('n-snap').addEventListener('click',function(){
+  currentMeal='breakfast';
   capImg=null;
   document.getElementById('ph-res').classList.remove('on');
   document.getElementById('ph-go').disabled=true;
@@ -898,13 +1055,13 @@ document.getElementById('ph-go').addEventListener('click',async function(){
     document.getElementById('ph-res').innerHTML='<strong>'+p.name+'</strong>'+(p.description?'<br>'+p.description:'')+'<br><br>📊 <strong>'+p.cal+' kcal</strong> · P:'+p.prot+'g · C:'+p.carb+'g · F:'+p.fat+'g';
     document.getElementById('ph-res').classList.add('on');
     var btn=this; btn.textContent='Add to log ✓'; btn.disabled=false;
-    btn.onclick=function(){FL.push(p);sv('wk5_food_'+dk(),FL);cM('ph-ov');document.querySelector('[data-s="nut"]').click();};
+    btn.onclick=function(){p.meal=currentMeal||'breakfast';FL.push(p);sv('wk5_food_'+dk(),FL);cM('ph-ov');document.querySelector('[data-s="nut"]').click();};
   }catch(e){document.getElementById('ph-res').innerHTML='Failed. Try again.';document.getElementById('ph-res').classList.add('on');this.disabled=false;this.textContent='✨ Analyze';}
 });
 
 // Food search
 var sfP=null;
-document.getElementById('n-srch').addEventListener('click',function(){document.getElementById('fs-res').classList.remove('on');document.getElementById('fs-add').disabled=true;document.getElementById('fs-ov').classList.add('on');});
+document.getElementById('n-srch').addEventListener('click',function(){currentMeal='breakfast';document.getElementById('fs-res').classList.remove('on');document.getElementById('fs-add').disabled=true;document.getElementById('fs-ov').classList.add('on');});
 async function searchF(){
   var q=document.getElementById('fs-in').value.trim(); if(!q) return;
   var b=document.getElementById('fs-btn'); b.disabled=true; b.textContent='...';
@@ -918,7 +1075,7 @@ async function searchF(){
 }
 document.getElementById('fs-btn').addEventListener('click',searchF);
 document.getElementById('fs-in').addEventListener('keydown',function(e){if(e.key==='Enter')searchF();});
-document.getElementById('fs-add').addEventListener('click',function(){if(sfP){FL.push(sfP);sv('wk5_food_'+dk(),FL);}cM('fs-ov');renderNut();});
+document.getElementById('fs-add').addEventListener('click',function(){if(sfP){sfP.meal=currentMeal||'breakfast';FL.push(sfP);sv('wk5_food_'+dk(),FL);}cM('fs-ov');renderNut();});
 
 // Barcode
 document.getElementById('n-bar').addEventListener('click',function(){
