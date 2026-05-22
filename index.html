@@ -10,8 +10,7 @@
 <title>Daily Workout</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0a0a0a;
@@ -23,714 +22,451 @@
   --green-glow: rgba(29,185,84,0.15);
   --text: #f5f5f5;
   --muted: #888;
-  --danger: #e74c3c;
-  --amber: #f39c12;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-h: 64px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-html, body {
+html { height: 100%; }
+
+body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
   overflow: hidden;
-  user-select: none;
-}
-
-.app {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* ── SCREENS ── */
-.screen {
-  display: none;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(72px + var(--safe-bottom));
-}
-.screen.active { display: block; }
-.screen-inner { padding: 0 16px; }
-
-/* ── TOP BAR ── */
-.topbar {
-  padding: calc(var(--safe-top) + 14px) 20px 14px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  background: var(--bg);
-  flex-shrink: 0;
-}
-.topbar-left .greeting {
-  font-size: 12px;
-  color: var(--muted);
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-.topbar-left .day-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -.02em;
-}
-.streak-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.streak-fire { font-size: 16px; }
-
-/* ── WEEK DOTS ── */
-.week-dots {
-  display: flex;
-  gap: 6px;
-  padding: 0 20px 16px;
-  flex-shrink: 0;
-}
-.wdot {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-.wdot-label { font-size: 10px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
-.wdot-circle {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--surface2);
-  border: 1.5px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 500; color: var(--muted);
-}
-.wdot.done .wdot-circle { background: var(--green); border-color: var(--green); color: #000; }
-.wdot.today .wdot-circle { border-color: var(--green); color: var(--green); background: var(--green-glow); }
-
-/* ── PROGRESS RING ── */
-.progress-section {
-  margin: 0 16px 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.ring-wrap { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
-.ring-wrap svg { transform: rotate(-90deg); }
-.ring-center {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-}
-.ring-pct { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
-.ring-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-.progress-stats { flex: 1; }
-.prog-stat { margin-bottom: 10px; }
-.prog-stat:last-child { margin-bottom: 0; }
-.prog-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
-.prog-stat-val { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
-.prog-stat-val span { font-size: 12px; font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; }
-
-/* ── EXERCISE CARDS ── */
-.section-title {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  margin: 0 16px 10px;
-  font-weight: 500;
-}
-.ex-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-
-.ex-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: transform .12s, border-color .2s, background .2s;
-  -webkit-user-select: none;
-}
-.ex-card:active { transform: scale(0.97); }
-.ex-card.done {
-  border-color: var(--green-dim);
-  background: rgba(29,185,84,0.06);
-}
-.ex-icon-wrap {
-  width: 46px; height: 46px;
-  border-radius: 12px;
-  background: var(--surface2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-  transition: background .2s;
-}
-.ex-card.done .ex-icon-wrap { background: var(--green-dim); }
-.ex-info { flex: 1; min-width: 0; }
-.ex-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color .2s, text-decoration .2s;
-}
-.ex-card.done .ex-name { color: var(--muted); text-decoration: line-through; }
-.ex-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.ex-check {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all .2s;
-}
-.ex-card.done .ex-check {
-  background: var(--green);
-  border-color: var(--green);
-}
-.checkmark {
-  width: 12px; height: 12px;
-  stroke: #000;
-  stroke-width: 2.5;
-  fill: none;
-  opacity: 0;
-  transition: opacity .15s;
-}
-.ex-card.done .checkmark { opacity: 1; }
-
-/* ── REST TIMER OVERLAY ── */
-.rest-overlay {
-  display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 24px;
-}
-.rest-overlay.show { display: flex; }
-.rest-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-}
-.rest-ring { position: relative; width: 160px; height: 160px; }
-.rest-ring svg { transform: rotate(-90deg); }
-.rest-center {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-}
-.rest-secs {
-  font-family: 'Syne', sans-serif;
-  font-size: 52px;
-  font-weight: 800;
-  line-height: 1;
-}
-.rest-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.rest-skip {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 12px 36px;
-  border-radius: 30px;
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  letter-spacing: .04em;
-}
-.rest-skip:active { transform: scale(0.96); }
-
-/* ── COMPLETE BANNER ── */
-.complete-banner {
-  display: none;
-  margin: 16px 16px 0;
-  background: linear-gradient(135deg, var(--green-dim), #0d4a1f);
-  border: 1px solid var(--green);
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-}
-.complete-banner.show { display: block; }
-.complete-emoji { font-size: 36px; margin-bottom: 8px; }
-.complete-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--green);
-}
-.complete-sub { font-size: 13px; color: #9FE1CB; margin-top: 4px; }
-
-/* ── SCHEDULE SCREEN ── */
-.sched-header {
-  padding: calc(var(--safe-top) + 14px) 20px 20px;
-  background: var(--bg);
-}
-.sched-header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-.sched-header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
-.sched-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-.sched-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: transform .12s;
-}
-.sched-card:active { transform: scale(0.97); }
-.sched-card.today-card { border-color: var(--green); background: var(--green-glow); }
-.sched-day-col { width: 36px; text-align: center; flex-shrink: 0; }
-.sched-day-name { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.sched-day-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.1;
-}
-.sched-card.today-card .sched-day-num { color: var(--green); }
-.sched-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: var(--surface2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.sched-card.today-card .sched-icon { background: var(--green-dim); }
-.sched-info { flex: 1; }
-.sched-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-}
-.sched-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.sched-done-badge {
-  font-size: 11px;
-  background: var(--green);
-  color: #000;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  letter-spacing: .02em;
-}
-.today-badge {
-  font-size: 11px;
-  background: var(--green);
-  color: #000;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-/* ── PROGRESS SCREEN ── */
-.prog-header {
-  padding: calc(var(--safe-top) + 14px) 20px 20px;
-  background: var(--bg);
-}
-.prog-header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 10px;
-  padding: 0 16px 16px;
-}
-.stat-tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-}
-.stat-tile-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-.stat-tile-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1;
-}
-.stat-tile-unit { font-size: 13px; font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; }
-.bar-chart { padding: 0 16px 20px; }
-.bar-chart-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.bars { display: flex; gap: 8px; align-items: flex-end; height: 100px; }
-.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.bar-fill {
   width: 100%;
-  background: var(--surface2);
-  border-radius: 6px 6px 0 0;
-  min-height: 4px;
-  transition: height .6s cubic-bezier(.34,1.56,.64,1);
-  position: relative;
+  top: 0; left: 0;
 }
-.bar-fill.active { background: var(--green); }
-.bar-day-label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-.pb-section { padding: 0 16px 20px; }
-.pb-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.pb-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.pb-row:last-child { border-bottom: none; }
-.pb-ex { flex: 1; font-size: 14px; font-weight: 500; }
-.pb-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--green);
-}
-.pb-unit { font-size: 12px; color: var(--muted); font-family: 'Inter', sans-serif; }
 
-/* ── SETTINGS SCREEN ── */
-.settings-header {
-  padding: calc(var(--safe-top) + 14px) 20px 20px;
-  background: var(--bg);
-}
-.settings-header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-.settings-group { padding: 0 16px 20px; }
-.settings-group-label {
-  font-size: 11px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: 8px;
-}
-.settings-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
+/* Use dvh (dynamic viewport height) with fallback */
+.app {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
 }
-.settings-item:last-child { margin-bottom: 0; }
-.settings-item-left { display: flex; align-items: center; gap: 12px; }
-.settings-item-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  background: var(--surface2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-}
-.settings-item-name { font-size: 15px; font-weight: 500; }
-.settings-item-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.toggle {
-  width: 44px; height: 26px;
-  background: var(--border);
-  border-radius: 13px;
-  position: relative;
-  cursor: pointer;
-  transition: background .2s;
-}
-.toggle.on { background: var(--green); }
-.toggle-knob {
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform .2s;
-}
-.toggle.on .toggle-knob { transform: translateX(18px); }
-.settings-arrow { color: var(--muted); font-size: 18px; }
-.rest-duration-input {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  width: 52px;
-  text-align: center;
-  border-radius: 8px;
-  padding: 4px;
-}
-.install-btn {
-  margin: 0 16px;
-  width: calc(100% - 32px);
-  padding: 16px;
-  background: var(--green);
-  color: #000;
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  display: none;
-  letter-spacing: .02em;
-}
-.install-btn.show { display: block; }
-.install-btn:active { transform: scale(0.98); }
-.app-version { text-align: center; font-size: 12px; color: var(--muted); padding: 16px; }
 
-/* ── BOTTOM NAV ── */
+/* ── BOTTOM NAV (rendered first in flex so it's always visible) ── */
 .bottom-nav {
   display: flex;
+  flex-shrink: 0;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 10px 0 calc(var(--safe-bottom) + 10px);
-  flex-shrink: 0;
+  height: var(--nav-h);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .nav-item {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 3px;
   cursor: pointer;
-  padding: 4px 0;
-  transition: color .15s;
   color: var(--muted);
   border: none;
   background: none;
-  -webkit-tap-highlight-color: transparent;
+  font-family: 'Inter', sans-serif;
+  touch-action: manipulation;
+  padding: 8px 0;
 }
 .nav-item.active { color: var(--green); }
-.nav-icon { font-size: 22px; line-height: 1; }
+.nav-icon { font-size: 20px; line-height: 1; }
 .nav-label { font-size: 10px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
 
-/* ── MISC ── */
-.spacer { height: 16px; }
+/* ── SCREENS ── */
+.screens {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+}
+.screen.active { display: block; }
+
+/* ── TOPBAR ── */
+.topbar {
+  padding: calc(env(safe-area-inset-top,0px) + 16px) 20px 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topbar-left .greeting { font-size: 12px; color: var(--muted); letter-spacing:.04em; text-transform:uppercase; }
+.topbar-left .day-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800;
+  line-height: 1.1; letter-spacing: -.02em;
+}
+.streak-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px; font-weight: 500;
+}
+
+/* ── WEEK DOTS ── */
+.week-dots { display:flex; gap:6px; padding: 0 20px 16px; }
+.wdot { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.wdot-label { font-size:10px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+.wdot-circle {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--surface2); border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:500; color:var(--muted);
+}
+.wdot.done .wdot-circle { background:var(--green); border-color:var(--green); color:#000; }
+.wdot.today .wdot-circle { border-color:var(--green); color:var(--green); background:var(--green-glow); }
+
+/* ── PROGRESS RING ── */
+.progress-section {
+  margin: 0 16px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.ring-wrap { position:relative; width:80px; height:80px; flex-shrink:0; }
+.ring-wrap svg { transform:rotate(-90deg); }
+.ring-center {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.ring-pct { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; }
+.ring-sub { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+.prog-stats { flex:1; display:flex; flex-direction:column; gap:8px; }
+.prog-stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+.prog-stat-val { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; }
+.prog-stat-val small { font-size:11px; font-weight:400; color:var(--muted); font-family:'Inter',sans-serif; }
+
+/* ── EXERCISE LIST ── */
+.section-title {
+  font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); margin:0 16px 10px; font-weight:500;
+}
+.ex-list { padding:0 16px; display:flex; flex-direction:column; gap:10px; padding-bottom:20px; }
+
+.ex-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; touch-action:manipulation;
+  transition: transform .1s, border-color .2s, background .2s;
+}
+.ex-card:active { transform:scale(0.97); }
+.ex-card.done { border-color:var(--green-dim); background:rgba(29,185,84,0.06); }
+.ex-icon-wrap {
+  width:44px; height:44px; border-radius:12px;
+  background:var(--surface2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0; transition:background .2s;
+}
+.ex-card.done .ex-icon-wrap { background:var(--green-dim); }
+.ex-info { flex:1; min-width:0; }
+.ex-name {
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  transition: color .2s;
+}
+.ex-card.done .ex-name { color:var(--muted); text-decoration:line-through; }
+.ex-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+.ex-check {
+  width:28px; height:28px; border-radius:50%;
+  border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all .2s;
+}
+.ex-card.done .ex-check { background:var(--green); border-color:var(--green); }
+.checkmark { width:12px; height:12px; stroke:#000; stroke-width:2.5; fill:none; opacity:0; transition:opacity .15s; }
+.ex-card.done .checkmark { opacity:1; }
+
+/* ── COMPLETE BANNER ── */
+.complete-banner {
+  display:none; margin:0 16px 16px;
+  background:rgba(29,185,84,0.1);
+  border:1px solid var(--green);
+  border-radius:16px; padding:18px; text-align:center;
+}
+.complete-banner.show { display:block; }
+.complete-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--green); }
+.complete-sub { font-size:13px; color:#9FE1CB; margin-top:4px; }
+
+/* ── REST OVERLAY ── */
+.rest-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.88); z-index:999;
+  align-items:center; justify-content:center; flex-direction:column; gap:24px;
+}
+.rest-overlay.show { display:flex; }
+.rest-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); }
+.rest-ring { position:relative; width:160px; height:160px; }
+.rest-ring svg { transform:rotate(-90deg); }
+.rest-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.rest-secs { font-family:'Syne',sans-serif; font-size:52px; font-weight:800; line-height:1; }
+.rest-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+.rest-skip {
+  background:var(--surface2); border:1px solid var(--border);
+  color:var(--text); padding:13px 40px; border-radius:30px;
+  font-family:'Syne',sans-serif; font-size:14px; font-weight:700;
+  cursor:pointer; touch-action:manipulation;
+}
+
+/* ── SCHEDULE SCREEN ── */
+.screen-header {
+  padding: calc(env(safe-area-inset-top,0px) + 16px) 20px 16px;
+  position:sticky; top:0; z-index:10; background:var(--bg);
+}
+.screen-header h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-.02em; }
+.screen-header p { font-size:13px; color:var(--muted); margin-top:2px; }
+.sched-list { padding:0 16px 20px; display:flex; flex-direction:column; gap:10px; }
+.sched-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  touch-action:manipulation;
+}
+.sched-card.today-card { border-color:var(--green); background:var(--green-glow); }
+.sched-day-col { width:36px; text-align:center; flex-shrink:0; }
+.sched-day-name { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+.sched-day-num { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; line-height:1.1; }
+.sched-card.today-card .sched-day-num { color:var(--green); }
+.sched-icon { width:42px; height:42px; border-radius:12px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.sched-card.today-card .sched-icon { background:var(--green-dim); }
+.sched-info { flex:1; }
+.sched-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.sched-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+.badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; letter-spacing:.02em; white-space:nowrap; }
+.badge-green { background:var(--green); color:#000; }
+.badge-outline { background:transparent; border:1px solid var(--green); color:var(--green); }
+
+/* ── PROGRESS SCREEN ── */
+.stats-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:0 16px 16px; }
+.stat-tile { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; }
+.stat-tile-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+.stat-tile-val { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; line-height:1; }
+.stat-tile-unit { font-size:12px; font-weight:400; color:var(--muted); font-family:'Inter',sans-serif; }
+.bar-chart { padding:0 16px 20px; }
+.bar-chart-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:14px; }
+.bars { display:flex; gap:8px; align-items:flex-end; height:90px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
+.bar-fill { width:100%; background:var(--surface2); border-radius:4px 4px 0 0; min-height:4px; }
+.bar-fill.active { background:var(--green); }
+.bar-day-label { font-size:10px; color:var(--muted); text-transform:uppercase; }
+.pb-section { padding:0 16px 20px; }
+.pb-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:12px; }
+.pb-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.pb-row:last-child { border-bottom:none; }
+.pb-ex { flex:1; font-size:14px; font-weight:500; }
+.pb-val { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--green); }
+.pb-unit { font-size:12px; color:var(--muted); }
+
+/* ── SETTINGS SCREEN ── */
+.settings-group { padding:0 16px 20px; }
+.settings-group-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+.settings-item {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:13px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px;
+}
+.settings-item:last-child { margin-bottom:0; }
+.settings-item-left { display:flex; align-items:center; gap:12px; }
+.settings-icon { width:34px; height:34px; border-radius:10px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.settings-name { font-size:14px; font-weight:500; }
+.settings-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.toggle { width:44px; height:26px; background:var(--border); border-radius:13px; position:relative; cursor:pointer; touch-action:manipulation; transition:background .2s; flex-shrink:0; }
+.toggle.on { background:var(--green); }
+.toggle-knob { position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; transition:transform .2s; }
+.toggle.on .toggle-knob { transform:translateX(18px); }
+.install-btn {
+  margin:0 16px 16px; width:calc(100% - 32px);
+  padding:15px; background:var(--green); color:#000;
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
+  border:none; border-radius:14px; cursor:pointer;
+  display:none; touch-action:manipulation;
+}
+.install-btn.show { display:block; }
+.rest-input {
+  background:var(--surface2); border:1px solid var(--border);
+  color:var(--text); font-family:'Syne',sans-serif;
+  font-size:15px; font-weight:700; width:52px;
+  text-align:center; border-radius:8px; padding:4px;
+}
+.app-version { text-align:center; font-size:12px; color:var(--muted); padding:16px; }
+.reset-btn { color:#e74c3c; font-size:13px; cursor:pointer; touch-action:manipulation; font-weight:500; }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- TODAY SCREEN -->
-  <div id="screen-today" class="screen active">
-    <div class="topbar">
-      <div class="topbar-left">
-        <div class="greeting">Good morning, Martin</div>
-        <div class="day-name" id="today-day-name">Push Day</div>
-      </div>
-      <div class="streak-badge">
-        <span class="streak-fire">🔥</span>
-        <span id="streak-count">3</span>
-      </div>
-    </div>
+  <!-- SCREENS CONTAINER -->
+  <div class="screens">
 
-    <div class="week-dots" id="week-dots"></div>
-
-    <div id="complete-banner" class="complete-banner">
-      <div class="complete-emoji">🏆</div>
-      <div class="complete-title">Workout Complete!</div>
-      <div class="complete-sub" id="complete-sub">Great work today</div>
-    </div>
-
-    <div class="progress-section" id="progress-section">
-      <div class="ring-wrap">
-        <svg width="80" height="80" viewBox="0 0 80 80">
-          <circle cx="40" cy="40" r="32" fill="none" stroke="#2a2a2a" stroke-width="7"/>
-          <circle id="ring-fill" cx="40" cy="40" r="32" fill="none" stroke="#1DB954" stroke-width="7"
-            stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round"/>
-        </svg>
-        <div class="ring-center">
-          <div class="ring-pct" id="ring-pct">0%</div>
-          <div class="ring-label">Done</div>
+    <!-- TODAY -->
+    <div id="screen-today" class="screen active">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="greeting">Good morning, Martin</div>
+          <div class="day-name" id="today-day-name">Push Day</div>
         </div>
+        <div class="streak-badge">🔥 <span id="streak-count">0</span></div>
       </div>
-      <div class="progress-stats">
-        <div class="prog-stat">
-          <div class="prog-stat-label">Calories</div>
-          <div class="prog-stat-val" id="stat-cal">0 <span>kcal</span></div>
-        </div>
-        <div class="prog-stat">
-          <div class="prog-stat-label">Time left</div>
-          <div class="prog-stat-val" id="stat-time">38 <span>min</span></div>
-        </div>
-        <div class="prog-stat">
-          <div class="prog-stat-label">Exercises</div>
-          <div class="prog-stat-val" id="stat-excount">0 <span>/ 5</span></div>
-        </div>
+      <div class="week-dots" id="week-dots"></div>
+      <div id="complete-banner" class="complete-banner">
+        <div class="complete-title">🏆 Workout Complete!</div>
+        <div class="complete-sub" id="complete-sub">Great work today</div>
       </div>
-    </div>
-
-    <div class="section-title" id="ex-section-title">Today's exercises</div>
-    <div class="ex-list" id="ex-list"></div>
-    <div class="spacer"></div>
-  </div>
-
-  <!-- SCHEDULE SCREEN -->
-  <div id="screen-schedule" class="screen">
-    <div class="sched-header">
-      <h1>Schedule</h1>
-      <p id="sched-week-label">This week</p>
-    </div>
-    <div class="sched-list" id="sched-list"></div>
-    <div class="spacer"></div>
-  </div>
-
-  <!-- PROGRESS SCREEN -->
-  <div id="screen-progress" class="screen">
-    <div class="prog-header">
-      <h1>Progress</h1>
-    </div>
-    <div class="stats-grid" id="stats-grid"></div>
-    <div class="bar-chart">
-      <div class="bar-chart-title">This week's activity</div>
-      <div class="bars" id="week-bars"></div>
-    </div>
-    <div class="pb-section">
-      <div class="pb-title">Personal bests</div>
-      <div id="pb-list"></div>
-    </div>
-    <div class="spacer"></div>
-  </div>
-
-  <!-- SETTINGS SCREEN -->
-  <div id="screen-settings" class="screen">
-    <div class="settings-header">
-      <h1>Settings</h1>
-    </div>
-    <button class="install-btn" id="install-btn">📲 Add to Home Screen</button>
-    <div class="spacer"></div>
-
-    <div class="settings-group">
-      <div class="settings-group-label">Preferences</div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon">⏱️</div>
-          <div>
-            <div class="settings-item-name">Rest duration</div>
-            <div class="settings-item-sub">Seconds between sets</div>
+      <div class="progress-section">
+        <div class="ring-wrap">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#2a2a2a" stroke-width="7"/>
+            <circle id="ring-fill" cx="40" cy="40" r="32" fill="none" stroke="#1DB954" stroke-width="7"
+              stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round" style="transition:stroke-dashoffset .4s"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-pct" id="ring-pct">0%</div>
+            <div class="ring-sub">Done</div>
           </div>
         </div>
-        <input class="rest-duration-input" type="number" id="rest-duration" value="60" min="10" max="300">
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon">🔔</div>
+        <div class="prog-stats">
           <div>
-            <div class="settings-item-name">Rest alerts</div>
-            <div class="settings-item-sub">Vibrate when rest ends</div>
+            <div class="prog-stat-label">Calories</div>
+            <div class="prog-stat-val" id="stat-cal">0 <small>kcal</small></div>
+          </div>
+          <div>
+            <div class="prog-stat-label">Time left</div>
+            <div class="prog-stat-val" id="stat-time">35 <small>min</small></div>
+          </div>
+          <div>
+            <div class="prog-stat-label">Exercises</div>
+            <div class="prog-stat-val" id="stat-excount">0 <small>/ 5</small></div>
           </div>
         </div>
-        <div class="toggle on" id="toggle-vibrate" onclick="toggleSetting('vibrate')">
-          <div class="toggle-knob"></div>
-        </div>
       </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon">💪</div>
-          <div>
-            <div class="settings-item-name">Auto-rest timer</div>
-            <div class="settings-item-sub">Start on exercise complete</div>
-          </div>
-        </div>
-        <div class="toggle on" id="toggle-autorest" onclick="toggleSetting('autorest')">
-          <div class="toggle-knob"></div>
-        </div>
+      <div class="section-title">Tap to complete</div>
+      <div class="ex-list" id="ex-list"></div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="screen-schedule" class="screen">
+      <div class="screen-header">
+        <h1>Schedule</h1>
+        <p id="sched-week-label"></p>
+      </div>
+      <div class="sched-list" id="sched-list"></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="screen-progress" class="screen">
+      <div class="screen-header"><h1>Progress</h1></div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="bar-chart">
+        <div class="bar-chart-title">This week</div>
+        <div class="bars" id="week-bars"></div>
+      </div>
+      <div class="pb-section">
+        <div class="pb-title">Personal bests</div>
+        <div id="pb-list"></div>
       </div>
     </div>
 
-    <div class="settings-group">
-      <div class="settings-group-label">Profile</div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon">👤</div>
-          <div>
-            <div class="settings-item-name">Martin</div>
-            <div class="settings-item-sub">Edit profile</div>
+    <!-- SETTINGS -->
+    <div id="screen-settings" class="screen">
+      <div class="screen-header"><h1>Settings</h1></div>
+      <button class="install-btn" id="install-btn">📲 Add to Home Screen</button>
+      <div class="settings-group">
+        <div class="settings-group-label">Workout</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon">⏱️</div>
+            <div>
+              <div class="settings-name">Rest duration</div>
+              <div class="settings-sub">Seconds between sets</div>
+            </div>
           </div>
+          <input class="rest-input" type="number" id="rest-duration" value="60" min="10" max="300">
         </div>
-        <div class="settings-arrow">›</div>
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon">🗑️</div>
-          <div>
-            <div class="settings-item-name">Reset today</div>
-            <div class="settings-item-sub">Clear today's progress</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon">🔔</div>
+            <div>
+              <div class="settings-name">Vibrate on rest end</div>
+              <div class="settings-sub">Haptic feedback</div>
+            </div>
           </div>
+          <div class="toggle on" id="toggle-vibrate"><div class="toggle-knob"></div></div>
         </div>
-        <div class="settings-arrow" onclick="resetToday()" style="cursor:pointer;color:#e74c3c;">Reset</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon">⚡</div>
+            <div>
+              <div class="settings-name">Auto rest timer</div>
+              <div class="settings-sub">Start when exercise tapped</div>
+            </div>
+          </div>
+          <div class="toggle on" id="toggle-autorest"><div class="toggle-knob"></div></div>
+        </div>
       </div>
+      <div class="settings-group">
+        <div class="settings-group-label">Data</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon">🗑️</div>
+            <div>
+              <div class="settings-name">Reset today's workout</div>
+              <div class="settings-sub">Clear all progress for today</div>
+            </div>
+          </div>
+          <span class="reset-btn" id="reset-btn">Reset</span>
+        </div>
+      </div>
+      <div class="app-version">Daily Workout v1.1 · Works offline</div>
     </div>
 
-    <div class="app-version">Daily Workout v1.0 · Works offline</div>
-    <div class="spacer"></div>
-  </div>
+  </div><!-- /screens -->
 
-  <!-- BOTTOM NAV -->
+  <!-- BOTTOM NAV — always visible -->
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchScreen('today')" id="nav-today">
+    <button class="nav-item active" id="nav-today" data-screen="today">
       <div class="nav-icon">⚡</div>
       <div class="nav-label">Today</div>
     </button>
-    <button class="nav-item" onclick="switchScreen('schedule')" id="nav-schedule">
+    <button class="nav-item" id="nav-schedule" data-screen="schedule">
       <div class="nav-icon">📅</div>
       <div class="nav-label">Schedule</div>
     </button>
-    <button class="nav-item" onclick="switchScreen('progress')" id="nav-progress">
+    <button class="nav-item" id="nav-progress" data-screen="progress">
       <div class="nav-icon">📊</div>
       <div class="nav-label">Progress</div>
     </button>
-    <button class="nav-item" onclick="switchScreen('settings')" id="nav-settings">
+    <button class="nav-item" id="nav-settings" data-screen="settings">
       <div class="nav-icon">⚙️</div>
       <div class="nav-label">Settings</div>
     </button>
   </nav>
-</div>
 
-<!-- REST TIMER OVERLAY -->
+</div><!-- /app -->
+
+<!-- REST OVERLAY -->
 <div class="rest-overlay" id="rest-overlay">
   <div class="rest-title">Rest time</div>
   <div class="rest-ring">
@@ -744,11 +480,11 @@ html, body {
       <div class="rest-sub">seconds</div>
     </div>
   </div>
-  <button class="rest-skip" onclick="skipRest()">Skip rest</button>
+  <button class="rest-skip" id="rest-skip">Skip rest</button>
 </div>
 
 <script>
-const DAYS = ['Push Day','Pull Day','Leg Day','Rest Day','Chest & Shoulders','Back & Biceps','Cardio'];
+const DAYS  = ['Push Day','Pull Day','Leg Day','Rest Day','Chest & Shoulders','Back & Biceps','Cardio'];
 const ICONS = ['🏋️','💪','🦵','😴','🔥','🎯','🏃'];
 const PLANS = {
   'Push Day':          [{n:'Bench Press',s:'4 × 10',cal:60},{n:'Overhead Press',s:'3 × 12',cal:45},{n:'Incline DB Press',s:'3 × 10',cal:50},{n:'Tricep Pushdowns',s:'3 × 15',cal:30},{n:'Lateral Raises',s:'4 × 12',cal:25}],
@@ -759,55 +495,58 @@ const PLANS = {
   'Back & Biceps':     [{n:'Wide-Grip Pull-ups',s:'3 × max',cal:55},{n:'Seated Cable Rows',s:'4 × 12',cal:50},{n:'Single-Arm Rows',s:'3 × 10',cal:45},{n:'EZ-Bar Curls',s:'3 × 12',cal:30},{n:'Concentration Curls',s:'3 × 12',cal:25}],
   'Cardio':            [{n:'Warm-up Jog',s:'5 min',cal:45},{n:'HIIT Sprints',s:'8 × 30s',cal:120},{n:'Jump Rope',s:'5 min',cal:60},{n:'Cool-down Walk',s:'5 min',cal:25}],
 };
-const PB_DATA = [
-  {ex:'Bench Press',val:'100',unit:'kg'},
-  {ex:'Squat',val:'120',unit:'kg'},
-  {ex:'Deadlift',val:'140',unit:'kg'},
-  {ex:'Pull-ups',val:'15',unit:'reps'},
-];
+const PB_DATA = [{ex:'Bench Press',val:'100',unit:'kg'},{ex:'Squat',val:'120',unit:'kg'},{ex:'Deadlift',val:'140',unit:'kg'},{ex:'Pull-ups',val:'15',unit:'reps'}];
+
+function dateKey() { return new Date().toISOString().slice(0,10); }
 
 const dow = new Date().getDay();
 const todayIdx = dow === 0 ? 6 : dow - 1;
 const todayName = DAYS[todayIdx];
 
 let settings = JSON.parse(localStorage.getItem('wk_settings') || '{"vibrate":true,"autorest":true,"restDuration":60}');
-let state = JSON.parse(localStorage.getItem('wk_state_' + dateKey()) || '{"done":[]}');
-let history = JSON.parse(localStorage.getItem('wk_history') || '{}');
+let state    = JSON.parse(localStorage.getItem('wk_state_' + dateKey()) || '{"done":[]}');
+let history  = JSON.parse(localStorage.getItem('wk_history') || '{}');
+let restInterval = null, restSecs = 0, restTotal = 60;
 
-let restInterval = null, restSecs = 0, restTotal = 0;
-let deferredPrompt = null;
+function saveState() { localStorage.setItem('wk_state_' + dateKey(), JSON.stringify(state)); }
+function saveSettings() { localStorage.setItem('wk_settings', JSON.stringify(settings)); }
 
-function dateKey() { return new Date().toISOString().slice(0,10); }
+// ── NAV ──
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const name = this.dataset.screen;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    this.classList.add('active');
+    if (name === 'schedule') initSchedule();
+    if (name === 'progress') initProgress();
+  });
+});
 
-function save() {
-  localStorage.setItem('wk_state_' + dateKey(), JSON.stringify(state));
-  localStorage.setItem('wk_settings', JSON.stringify(settings));
-}
-
-// ── INIT TODAY ──
+// ── TODAY ──
 function initToday() {
-  const exercises = PLANS[todayName];
   document.getElementById('today-day-name').textContent = todayName;
   document.getElementById('streak-count').textContent = calcStreak();
   renderWeekDots();
   renderExList();
   updateProgress();
+  if (allDone()) document.getElementById('complete-banner').classList.add('show');
 }
 
 function renderWeekDots() {
   const wrap = document.getElementById('week-dots');
   wrap.innerHTML = '';
-  const labels = ['M','T','W','T','F','S','S'];
-  for (let i = 0; i < 7; i++) {
+  ['M','T','W','T','F','S','S'].forEach((lbl, i) => {
     const d = new Date(); d.setDate(d.getDate() - todayIdx + i);
     const key = d.toISOString().slice(0,10);
-    const isDone = history[key] === true || (i === todayIdx && allDone());
+    const isDone = history[key] || (i === todayIdx && allDone());
     const isToday = i === todayIdx;
     const div = document.createElement('div');
-    div.className = 'wdot' + (isDone ? ' done' : '') + (isToday && !isDone ? ' today' : '');
-    div.innerHTML = `<div class="wdot-label">${labels[i]}</div><div class="wdot-circle">${isDone ? '✓' : (d.getDate())}</div>`;
+    div.className = 'wdot' + (isDone ? ' done' : isToday ? ' today' : '');
+    div.innerHTML = '<div class="wdot-label">' + lbl + '</div><div class="wdot-circle">' + (isDone ? '✓' : d.getDate()) + '</div>';
     wrap.appendChild(div);
-  }
+  });
 }
 
 function renderExList() {
@@ -818,74 +557,60 @@ function renderExList() {
     const done = state.done.includes(i);
     const card = document.createElement('div');
     card.className = 'ex-card' + (done ? ' done' : '');
-    card.innerHTML = `
-      <div class="ex-icon-wrap">${ICONS[todayIdx]}</div>
-      <div class="ex-info">
-        <div class="ex-name">${ex.n}</div>
-        <div class="ex-meta">${ex.s}</div>
-      </div>
-      <div class="ex-check">
-        <svg class="checkmark" viewBox="0 0 14 14"><polyline points="2,7 5.5,11 12,3"/></svg>
-      </div>`;
-    card.onclick = () => toggleEx(i);
+    card.innerHTML =
+      '<div class="ex-icon-wrap">' + ICONS[todayIdx] + '</div>' +
+      '<div class="ex-info"><div class="ex-name">' + ex.n + '</div><div class="ex-meta">' + ex.s + '</div></div>' +
+      '<div class="ex-check"><svg class="checkmark" viewBox="0 0 14 14"><polyline points="2,7 5.5,11 12,3"/></svg></div>';
+    card.addEventListener('click', function() { toggleEx(i); });
     list.appendChild(card);
   });
 }
 
 function toggleEx(i) {
-  const exercises = PLANS[todayName];
-  const wasDone = state.done.includes(i);
-  if (!wasDone) {
-    state.done.push(i);
-    save();
-    renderExList();
-    updateProgress();
-    if (settings.autorest) startRest();
-    if (allDone()) markDayComplete();
-  } else {
+  if (state.done.includes(i)) {
     state.done = state.done.filter(x => x !== i);
-    save();
-    renderExList();
-    updateProgress();
+    document.getElementById('complete-banner').classList.remove('show');
+  } else {
+    state.done.push(i);
+    if (settings.autorest) startRest();
+    if (allDone()) {
+      history[dateKey()] = true;
+      localStorage.setItem('wk_history', JSON.stringify(history));
+      document.getElementById('complete-banner').classList.add('show');
+      const totalCal = PLANS[todayName].reduce((s,e) => s+e.cal, 0);
+      document.getElementById('complete-sub').textContent = totalCal + ' kcal burned · Great work!';
+      if (settings.vibrate && navigator.vibrate) navigator.vibrate([100,50,100]);
+      renderWeekDots();
+    }
   }
+  saveState();
+  renderExList();
+  updateProgress();
 }
+
+function allDone() { return state.done.length >= PLANS[todayName].length; }
 
 function updateProgress() {
   const exercises = PLANS[todayName];
   const doneCount = state.done.length;
   const total = exercises.length;
   const pct = total > 0 ? Math.round(doneCount / total * 100) : 0;
-  const circ = 201;
-  document.getElementById('ring-fill').style.strokeDashoffset = circ - (circ * pct / 100);
+  document.getElementById('ring-fill').style.strokeDashoffset = 201 - (201 * pct / 100);
   document.getElementById('ring-pct').textContent = pct + '%';
-  const cal = state.done.reduce((s, i) => s + (exercises[i]?.cal || 0), 0);
-  document.getElementById('stat-cal').innerHTML = cal + ' <span>kcal</span>';
-  const rem = (total - doneCount) * 7;
-  document.getElementById('stat-time').innerHTML = (rem > 0 ? rem : 0) + ' <span>min</span>';
-  document.getElementById('stat-excount').innerHTML = doneCount + ' <span>/ ' + total + '</span>';
-}
-
-function allDone() {
-  return state.done.length >= PLANS[todayName].length;
-}
-
-function markDayComplete() {
-  history[dateKey()] = true;
-  localStorage.setItem('wk_history', JSON.stringify(history));
-  const banner = document.getElementById('complete-banner');
-  banner.classList.add('show');
-  const totalCal = PLANS[todayName].reduce((s, e) => s + e.cal, 0);
-  document.getElementById('complete-sub').textContent = totalCal + ' kcal burned · Great work!';
-  if (settings.vibrate && navigator.vibrate) navigator.vibrate([100, 50, 100]);
-  renderWeekDots();
+  const cal = state.done.reduce((s,i) => s + (exercises[i]?.cal||0), 0);
+  document.getElementById('stat-cal').innerHTML = cal + ' <small>kcal</small>';
+  const rem = Math.max(0, (total - doneCount) * 7);
+  document.getElementById('stat-time').innerHTML = rem + ' <small>min</small>';
+  document.getElementById('stat-excount').innerHTML = doneCount + ' <small>/ ' + total + '</small>';
 }
 
 function calcStreak() {
-  let streak = 0, d = new Date();
+  let streak = 0;
+  const d = new Date();
   for (let i = 0; i < 30; i++) {
-    d.setDate(d.getDate() - (i === 0 ? 0 : 1));
-    const k = d.toISOString().slice(0,10);
-    if (history[k]) streak++; else if (i > 0) break;
+    if (i > 0) d.setDate(d.getDate() - 1);
+    if (history[d.toISOString().slice(0,10)]) streak++;
+    else if (i > 0) break;
   }
   return streak;
 }
@@ -897,7 +622,7 @@ function startRest() {
   document.getElementById('rest-overlay').classList.add('show');
   updateRestDisplay();
   clearInterval(restInterval);
-  restInterval = setInterval(() => {
+  restInterval = setInterval(function() {
     restSecs--;
     if (restSecs <= 0) { skipRest(); return; }
     updateRestDisplay();
@@ -906,9 +631,7 @@ function startRest() {
 
 function updateRestDisplay() {
   document.getElementById('rest-secs').textContent = restSecs;
-  const circ = 427;
-  const offset = circ * (1 - restSecs / restTotal);
-  document.getElementById('rest-ring-fill').style.strokeDashoffset = offset;
+  document.getElementById('rest-ring-fill').style.strokeDashoffset = 427 * (1 - restSecs / restTotal);
 }
 
 function skipRest() {
@@ -917,140 +640,122 @@ function skipRest() {
   if (settings.vibrate && navigator.vibrate) navigator.vibrate(50);
 }
 
-// ── SCHEDULE SCREEN ──
+document.getElementById('rest-skip').addEventListener('click', skipRest);
+
+// ── SCHEDULE ──
 function initSchedule() {
   const now = new Date();
   const monday = new Date(now);
   const off = now.getDay() === 0 ? -6 : 1 - now.getDay();
   monday.setDate(now.getDate() + off);
-  const fmt = d => d.toLocaleDateString('en-CA', {month:'short', day:'numeric'});
+  const fmt = d => d.toLocaleDateString('en-CA', {month:'short',day:'numeric'});
   const end = new Date(monday); end.setDate(monday.getDate() + 6);
   document.getElementById('sched-week-label').textContent = fmt(monday) + ' – ' + fmt(end);
 
   const list = document.getElementById('sched-list');
   list.innerHTML = '';
-  const dayLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  for (let i = 0; i < 7; i++) {
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach((lbl, i) => {
     const d = new Date(monday); d.setDate(monday.getDate() + i);
     const key = d.toISOString().slice(0,10);
     const isToday = i === todayIdx;
     const isDone = history[key] || (isToday && allDone());
+    const planEx = PLANS[DAYS[i]];
+    const meta = DAYS[i] === 'Rest Day' ? 'Recovery & mobility' : planEx.length + ' exercises · ~' + (planEx.length*7) + ' min';
+    const badge = isDone
+      ? '<span class="badge badge-green">✓ Done</span>'
+      : isToday ? '<span class="badge badge-outline">Today</span>' : '';
     const card = document.createElement('div');
     card.className = 'sched-card' + (isToday ? ' today-card' : '');
-    const badge = isDone
-      ? '<span class="sched-done-badge">✓ Done</span>'
-      : isToday ? '<span class="today-badge">Today</span>' : '';
-    const planEx = PLANS[DAYS[i]];
-    const meta = DAYS[i] === 'Rest Day' ? 'Recovery' : planEx.length + ' exercises · ~' + (planEx.length * 7) + ' min';
-    card.innerHTML = `
-      <div class="sched-day-col">
-        <div class="sched-day-name">${dayLabels[i]}</div>
-        <div class="sched-day-num">${d.getDate()}</div>
-      </div>
-      <div class="sched-icon">${ICONS[i]}</div>
-      <div class="sched-info">
-        <div class="sched-name">${DAYS[i]}</div>
-        <div class="sched-meta">${meta}</div>
-      </div>
-      ${badge}`;
-    if (isToday) card.onclick = () => switchScreen('today');
+    card.innerHTML =
+      '<div class="sched-day-col"><div class="sched-day-name">' + lbl + '</div><div class="sched-day-num">' + d.getDate() + '</div></div>' +
+      '<div class="sched-icon">' + ICONS[i] + '</div>' +
+      '<div class="sched-info"><div class="sched-name">' + DAYS[i] + '</div><div class="sched-meta">' + meta + '</div></div>' +
+      badge;
     list.appendChild(card);
-  }
+  });
 }
 
-// ── PROGRESS SCREEN ──
+// ── PROGRESS ──
 function initProgress() {
   const totalWorkouts = Object.keys(history).length;
-  const totalCal = totalWorkouts * 210;
-  const grid = document.getElementById('stats-grid');
-  grid.innerHTML = `
-    <div class="stat-tile"><div class="stat-tile-label">Workouts</div><div class="stat-tile-val">${totalWorkouts} <span class="stat-tile-unit">total</span></div></div>
-    <div class="stat-tile"><div class="stat-tile-label">This week</div><div class="stat-tile-val">${Object.keys(history).filter(k => { const d = new Date(k); const n = new Date(); return n - d < 7*86400000; }).length} <span class="stat-tile-unit">days</span></div></div>
-    <div class="stat-tile"><div class="stat-tile-label">Calories</div><div class="stat-tile-val">${totalCal.toLocaleString()} <span class="stat-tile-unit">kcal</span></div></div>
-    <div class="stat-tile"><div class="stat-tile-label">Streak</div><div class="stat-tile-val">${calcStreak()} <span class="stat-tile-unit">days</span></div></div>`;
+  const weekDays = Object.keys(history).filter(k => new Date() - new Date(k) < 7*86400000).length;
+  document.getElementById('stats-grid').innerHTML =
+    '<div class="stat-tile"><div class="stat-tile-label">Workouts</div><div class="stat-tile-val">' + totalWorkouts + ' <span class="stat-tile-unit">total</span></div></div>' +
+    '<div class="stat-tile"><div class="stat-tile-label">This week</div><div class="stat-tile-val">' + weekDays + ' <span class="stat-tile-unit">days</span></div></div>' +
+    '<div class="stat-tile"><div class="stat-tile-label">Calories</div><div class="stat-tile-val">' + (totalWorkouts*210).toLocaleString() + ' <span class="stat-tile-unit">kcal</span></div></div>' +
+    '<div class="stat-tile"><div class="stat-tile-label">Streak</div><div class="stat-tile-val">' + calcStreak() + ' <span class="stat-tile-unit">days</span></div></div>';
 
   const bars = document.getElementById('week-bars');
   bars.innerHTML = '';
-  const dayLabels = ['M','T','W','T','F','S','S'];
   const now = new Date();
-  const monday = new Date(now); const off = now.getDay()===0?-6:1-now.getDay(); monday.setDate(now.getDate()+off);
-  const maxH = 80;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday); d.setDate(monday.getDate() + i);
+  const monday = new Date(now);
+  const off = now.getDay()===0?-6:1-now.getDay();
+  monday.setDate(now.getDate()+off);
+  ['M','T','W','T','F','S','S'].forEach((lbl,i) => {
+    const d = new Date(monday); d.setDate(monday.getDate()+i);
     const key = d.toISOString().slice(0,10);
-    const done = history[key] || (i === todayIdx && allDone());
-    const pct = done ? (0.6 + Math.random() * 0.4) : (i < todayIdx ? 0.3 + Math.random() * 0.3 : 0.05);
-    const h = Math.round(pct * maxH);
-    const isToday = i === todayIdx;
+    const done = history[key] || (i===todayIdx && allDone());
+    const past = i < todayIdx;
+    const h = done ? Math.round(55 + Math.random()*30) : past ? Math.round(20 + Math.random()*25) : 4;
     const col = document.createElement('div');
     col.className = 'bar-col';
-    col.innerHTML = `<div class="bar-fill${done || isToday ? ' active' : ''}" style="height:${h}px"></div><div class="bar-day-label">${dayLabels[i]}</div>`;
+    col.innerHTML = '<div class="bar-fill' + (done||i===todayIdx?' active':'') + '" style="height:' + h + 'px"></div><div class="bar-day-label">' + lbl + '</div>';
     bars.appendChild(col);
-  }
+  });
 
-  const pbList = document.getElementById('pb-list');
-  pbList.innerHTML = PB_DATA.map(pb => `
-    <div class="pb-row">
-      <div class="pb-ex">${pb.ex}</div>
-      <div class="pb-val">${pb.val} <span class="pb-unit">${pb.unit}</span></div>
-    </div>`).join('');
-}
-
-// ── NAV ──
-function switchScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'schedule') initSchedule();
-  if (name === 'progress') initProgress();
-  if (name === 'today') initToday();
+  document.getElementById('pb-list').innerHTML = PB_DATA.map(pb =>
+    '<div class="pb-row"><div class="pb-ex">' + pb.ex + '</div><div class="pb-val">' + pb.val + ' <span class="pb-unit">' + pb.unit + '</span></div></div>'
+  ).join('');
 }
 
 // ── SETTINGS ──
-function toggleSetting(key) {
-  settings[key] = !settings[key];
-  document.getElementById('toggle-' + key).classList.toggle('on', settings[key]);
-  save();
-}
+document.getElementById('toggle-vibrate').addEventListener('click', function() {
+  settings.vibrate = !settings.vibrate;
+  this.classList.toggle('on', settings.vibrate);
+  saveSettings();
+});
+document.getElementById('toggle-autorest').addEventListener('click', function() {
+  settings.autorest = !settings.autorest;
+  this.classList.toggle('on', settings.autorest);
+  saveSettings();
+});
+document.getElementById('rest-duration').addEventListener('change', function() {
+  settings.restDuration = parseInt(this.value) || 60;
+  saveSettings();
+});
+document.getElementById('toggle-vibrate').classList.toggle('on', settings.vibrate);
+document.getElementById('toggle-autorest').classList.toggle('on', settings.autorest);
+document.getElementById('rest-duration').value = settings.restDuration || 60;
 
-function resetToday() {
-  if (confirm('Reset today's progress?')) {
-    state = {done: []};
+document.getElementById('reset-btn').addEventListener('click', function() {
+  if (confirm('Reset today\'s workout?')) {
+    state = {done:[]};
     delete history[dateKey()];
     localStorage.setItem('wk_history', JSON.stringify(history));
-    save();
+    saveState();
     document.getElementById('complete-banner').classList.remove('show');
     initToday();
   }
-}
-
-document.getElementById('rest-duration').addEventListener('change', e => {
-  settings.restDuration = parseInt(e.target.value) || 60;
-  save();
 });
 
-document.getElementById('toggle-vibrate').classList.toggle('on', settings.vibrate);
-document.getElementById('toggle-autorest').classList.toggle('on', settings.autorest);
-
 // ── PWA INSTALL ──
-window.addEventListener('beforeinstallprompt', e => {
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
   document.getElementById('install-btn').classList.add('show');
 });
-
-document.getElementById('install-btn').onclick = async () => {
+document.getElementById('install-btn').addEventListener('click', async function() {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') document.getElementById('install-btn').classList.remove('show');
+  if (outcome === 'accepted') this.classList.remove('show');
   deferredPrompt = null;
-};
+});
 
 // ── SERVICE WORKER ──
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').catch(function(){});
 }
 
 // ── BOOT ──
