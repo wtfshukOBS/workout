@@ -1060,6 +1060,32 @@ canvas.cc{width:100%;height:140px;display:block}
 <div id="s-set" class="scr">
   <div class="shdr"><div><h1>Settings</h1><p>v4.0 · AI-powered</p></div></div>
   <button class="instbtn" id="inst-btn"><svg><use href="#i-install"/></svg>Add to Home Screen</button>
+
+  <div class="sg"><div class="sgl">🤖 AI Configuration</div>
+    <div class="si" style="flex-direction:column;align-items:flex-start;gap:10px">
+      <div class="sil">
+        <div class="sic"><svg><use href="#i-sparkle"/></svg></div>
+        <div><div class="sin">Claude API Key</div><div class="sis">Required for AI features</div></div>
+      </div>
+      <input id="s-apikey" type="password"
+        placeholder="sk-ant-api03-..."
+        style="width:100%;background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;-webkit-appearance:none"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;gap:8px;width:100%">
+        <button id="s-apikey-save" style="flex:1;padding:10px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">Save Key</button>
+        <button id="s-apikey-clear" style="padding:10px 14px;background:var(--card-2);color:var(--text-2);border:1px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer">Clear</button>
+      </div>
+      <div id="s-apikey-status" style="font-size:12px;color:var(--text-2);width:100%;text-align:center;display:none"></div>
+    </div>
+    <div style="padding:10px 14px;background:var(--card-2);border-radius:11px;margin-top:4px">
+      <div style="font-size:12px;color:var(--text-2);line-height:1.6">
+        🔑 Get your free API key at <strong style="color:var(--brand)">console.anthropic.com</strong><br>
+        🔒 Your key is stored only on this device — never sent anywhere else<br>
+        ⚡ Powers: AI chat, workout plans, food photo analysis
+      </div>
+    </div>
+  </div>
+
   <div class="sg"><div class="sgl">Workout</div>
     <div class="si"><div class="sil"><div class="sic"><svg><use href="#i-clock"/></svg></div><div><div class="sin">Rest duration</div><div class="sis">Seconds between sets</div></div></div><input class="rinp" type="number" id="s-rest" value="60"></div>
     <div class="si"><div class="sil"><div class="sic"><svg><use href="#i-bell"/></svg></div><div><div class="sin">Vibrate on rest end</div></div></div><div class="tog on" id="s-vib"><div class="tok"></div></div></div>
@@ -1199,6 +1225,7 @@ let BL=ld('wk_bodylog',[]);
 let FL=ld('wk5_food_'+dk(),[]);
 let NG=ld('wk5_ng',{cal:2400,prot:150,carb:270,fat:67});
 let CH=[];
+let APIKEY=localStorage.getItem('wk_apikey')||'';
 
 // NAV
 document.querySelectorAll('.nb').forEach(function(btn){
@@ -1374,13 +1401,15 @@ function ctx(){
   return 'Martin: workouts='+Object.keys(hist).length+' streak='+streak()+' today='+TN+'\nLifts:\n'+ls+'\nFood today: '+fl+' Goal: '+NG.cal+'kcal P:'+NG.prot+'g C:'+NG.carb+'g F:'+NG.fat+'g';
 }
 async function callAI(msg,sys,useH){
+  if(!APIKEY){throw new Error('NO_KEY');}
   var system='You are Coach, expert trainer helping Martin. Be concise, actionable, use bullet points. '+(sys||'')+'\n'+ctx();
   var msgs=useH?[...CH,{role:'user',content:msg}]:[{role:'user',content:msg}];
-  var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:system,messages:msgs})});
+  var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':APIKEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:system,messages:msgs})});
   var d=await r.json(); if(d.error) throw new Error(d.error.message); return d.content[0].text;
 }
 async function callV(b64,mt,p){
-  var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mt,data:b64}},{type:'text',text:p}]}]})});
+  if(!APIKEY){throw new Error('NO_KEY');}
+  var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':APIKEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mt,data:b64}},{type:'text',text:p}]}]})});
   var d=await r.json(); if(d.error) throw new Error(d.error.message); return d.content[0].text;
 }
 function parseN(txt){try{var m=txt.match(/\{[\s\S]*?\}/);if(m)return JSON.parse(m[0]);}catch(e){}return{name:txt.split('\n')[0].slice(0,40),cal:parseInt(txt.match(/(\d+)\s*k?cal/i)||[0,0])[1]||0,prot:parseInt(txt.match(/protein[:\s]+(\d+)/i)||[0,0])[1]||0,carb:parseInt(txt.match(/carb[:\s]+(\d+)/i)||[0,0])[1]||0,fat:parseInt(txt.match(/fat[:\s]+(\d+)/i)||[0,0])[1]||0};}
@@ -1401,7 +1430,14 @@ async function sendChat(txt){
   document.getElementById('ai-typing').classList.add('on');
   aiMsgs.scrollTop=aiMsgs.scrollHeight;
   try{CH.push({role:'user',content:txt});var rep=await callAI(txt,'',true);document.getElementById('ai-typing').classList.remove('on');addMsg(rep,'a');CH.push({role:'assistant',content:rep});if(CH.length>20)CH=CH.slice(-20);}
-  catch(e){document.getElementById('ai-typing').classList.remove('on');addMsg('Connection error. Check internet and try again.','a');}
+  catch(e){
+    document.getElementById('ai-typing').classList.remove('on');
+    if(e.message==='NO_KEY'){
+      addMsg('⚙️ No API key set yet! Go to Settings → AI Configuration and paste your Claude API key. Get one free at console.anthropic.com','a');
+    } else {
+      addMsg('Connection error: '+e.message+'. Check your API key in Settings.','a');
+    }
+  }
   document.getElementById('ai-send').disabled=false;
 }
 document.getElementById('ai-send').addEventListener('click',function(){sendChat(document.getElementById('ai-in').value);});
@@ -1415,7 +1451,7 @@ async function runCoach(btnId,resId,prompt){
   b.disabled=true; b.innerHTML='<span class="spin"></span>';
   r.textContent='Thinking…'; r.classList.remove('dim');
   try{r.textContent=await callAI(prompt,'Be specific, use bullet points, max 5.',false);}
-  catch(e){r.textContent='Failed. Try again.'; r.classList.add('dim');}
+  catch(e){r.textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings first':'Failed. Try again.'; r.classList.add('dim');}
   b.disabled=false; b.textContent='Refresh';
 }
 document.getElementById('c-w-btn').addEventListener('click',function(){runCoach('c-w-btn','c-wk','Analyze my workout week. What am I doing well and what needs improvement?');});
@@ -1548,7 +1584,7 @@ document.getElementById('ph-go').addEventListener('click',async function(){
     document.getElementById('ph-res').classList.add('on');
     var btn=this; btn.textContent='Add to log'; btn.disabled=false;
     btn.onclick=function(){p.meal=currentMeal||'breakfast';FL.push(p);sv('wk5_food_'+dk(),FL);cM('ph-ov');document.querySelector('[data-s="nut"]').click();};
-  }catch(e){document.getElementById('ph-res').innerHTML='Failed. Try again.';document.getElementById('ph-res').classList.add('on');this.disabled=false;this.textContent='Analyze';}
+  }catch(e){document.getElementById('ph-res').innerHTML=e.message==='NO_KEY'?'⚙️ Add your Claude API key in Settings to use photo analysis':'Failed. Try again.';document.getElementById('ph-res').classList.add('on');this.disabled=false;this.textContent='Analyze';}
 });
 
 // Food search
@@ -1702,6 +1738,41 @@ function initSched(){
 // SETTINGS
 document.getElementById('s-vib').addEventListener('click',function(){S.vib=!S.vib;this.classList.toggle('on',S.vib);sv('wk5_s',S);});
 document.getElementById('s-ar').addEventListener('click',function(){S.ar=!S.ar;this.classList.toggle('on',S.ar);sv('wk5_s',S);});
+
+// API KEY
+(function(){
+  var inp=document.getElementById('s-apikey');
+  var status=document.getElementById('s-apikey-status');
+  // show masked key if already saved
+  if(APIKEY){
+    inp.placeholder='Key saved: sk-ant-…'+APIKEY.slice(-4);
+    status.textContent='✅ API key saved — AI features active';
+    status.style.color='var(--brand)';
+    status.style.display='block';
+  }
+  document.getElementById('s-apikey-save').addEventListener('click',function(){
+    var val=inp.value.trim();
+    if(!val){status.textContent='⚠️ Please paste your API key first';status.style.color='var(--rose)';status.style.display='block';return;}
+    if(!val.startsWith('sk-ant-')){status.textContent='⚠️ Key should start with sk-ant-…';status.style.color='var(--rose)';status.style.display='block';return;}
+    APIKEY=val;
+    localStorage.setItem('wk_apikey',val);
+    inp.value='';
+    inp.placeholder='Key saved: sk-ant-…'+val.slice(-4);
+    status.textContent='✅ Saved! AI features are now active';
+    status.style.color='var(--brand)';
+    status.style.display='block';
+    setTimeout(function(){status.style.display='none';},3000);
+  });
+  document.getElementById('s-apikey-clear').addEventListener('click',function(){
+    APIKEY='';
+    localStorage.removeItem('wk_apikey');
+    inp.value=''; inp.placeholder='sk-ant-api03-…';
+    status.textContent='🗑️ Key cleared';
+    status.style.color='var(--text-2)';
+    status.style.display='block';
+    setTimeout(function(){status.style.display='none';},2000);
+  });
+})();
 document.getElementById('s-rest').addEventListener('change',function(){S.rest=parseInt(this.value)||60;sv('wk5_s',S);});
 document.getElementById('s-vib').classList.toggle('on',S.vib);
 document.getElementById('s-ar').classList.toggle('on',S.ar);
